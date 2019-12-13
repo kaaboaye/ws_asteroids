@@ -11,7 +11,7 @@
 
 using json = nlohmann::json;
 
-std::optional<std::reference_wrapper<const std::string>> handle_message(const std::string &raw_message) {
+std::string bdsm_asteroidy::message::handle(const std::string &raw_message) {
     try {
         auto msg = json::parse(raw_message);
 
@@ -23,12 +23,11 @@ std::optional<std::reference_wrapper<const std::string>> handle_message(const st
 
         command::t parsed_cmd = command::from_string(command);
 
-        auto& str_cmd = command::to_string(parsed_cmd);
-        return std::optional<std::reference_wrapper<const std::string>>(str_cmd);
+        return command::to_string(parsed_cmd) + "\n";
     } catch (...) {
         std::cout << "Incorrect message received" << std::endl
                   << raw_message << std::endl;
 
-        return {};
+        return "{\"message\":\"error\",\"code\":\"bad_format\"}\n";
     }
 }

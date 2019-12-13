@@ -1,0 +1,6 @@
+[submodule "libs/tbb"]
+	path = libs/tbb
+	url = git@github.com:intel/tbb.git
+[submodule "libs/json"]
+	path = libs/json
+	url = https://github.com/nlohmann/json.git

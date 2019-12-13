@@ -7,8 +7,9 @@
 
 #include <string>
 
-
-std::optional<std::reference_wrapper<const std::string>> handle_message(const std::string &raw_message);
+namespace bdsm_asteroidy::message {
+    std::string handle(const std::string &raw_message);
+}
 
 
 #endif //BDSM_ASTEROIDS_MESSAGE_H
