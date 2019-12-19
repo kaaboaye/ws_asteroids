@@ -10,26 +10,30 @@ using namespace bdsm_asteroidy;
 
 using json = nlohmann::json;
 
-player::player(tcp_server::connection_t connection)
-        : id(sequential_id::create()), connection(connection) {
-    json welcome_message = {
-            {"message",      "player_created"},
-            {"player",       {
-                                     {"id",            id}
-                             }},
-            {"__internal__", {
-                                     {"connection_id", connection}
-                             }}
-    };
+Player::Player(sequence::val id, tcp_server::connection_t connection)
+        : id(id), connection(connection) {
+    position.set<0>(0);
+    position.set<1>(0);
 
-    send_message(welcome_message.dump());
+    movement.set<0>(0);
+    movement.set<1>(0);
+
+    rotation = 0;
 }
 
-player::player() {
+Player::Player() {
     id = 0;
     connection = 0;
+
+    position.set<0>(0);
+    position.set<1>(0);
+
+    movement.set<0>(0);
+    movement.set<1>(0);
+
+    rotation = 0;
 }
 
-void player::send_message(const std::string &message) const {
+void Player::send_message(const std::string &message) const {
     tcp_server::send_message_to_connection(connection, message);
 }

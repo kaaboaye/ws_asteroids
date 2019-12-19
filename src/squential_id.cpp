@@ -7,8 +7,6 @@
 
 using namespace bdsm_asteroidy;
 
-
-sequential_id::t sequential_id::create() {
-static std::atomic<sequential_id::t> counter = 0;
+sequence::val sequence::next() {
     return ++counter;
 }

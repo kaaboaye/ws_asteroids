@@ -6,11 +6,15 @@
 #define BDSM_ASTEROIDS_SQUENTIAL_ID_H
 
 #include <cstdint>
+#include <atomic>
 
-namespace bdsm_asteroidy::sequential_id {
-    typedef uint64_t t;
-
-    t create();
+namespace bdsm_asteroidy {
+    class sequence {
+    public:
+        typedef uint64_t val;
+        std::atomic<val> counter = 0;
+        val next();
+    };
 }
 
 

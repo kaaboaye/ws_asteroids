@@ -7,6 +7,7 @@
 
 static std::unordered_map<std::string, command::t> str_to_command = { // NOLINT(cert-err58-cpp)
         {"create_player", command::create_player},
+        {"get_player", command::get_player},
         {"move_player", command::move_player},
         {"fire", command::fire}
 };
@@ -21,9 +22,10 @@ command::t command::from_string(const std::string &command) {
     return cmd->second;
 }
 
-static std::string command_to_str[] = {
+static std::string command_to_str[] = { // NOLINT(cert-err58-cpp)
         "unknown",
         "create_player",
+        "get_player",
         "move_player",
         "fire",
 };

@@ -6,9 +6,10 @@
 #define BDSM_ASTEROIDS_MESSAGE_H
 
 #include <string>
+#include "../game.h"
 
 namespace bdsm_asteroidy::message {
-    std::string handle(const std::string &raw_message);
+    std::optional<std::string*> handle(Game &game, tcp_server::connection_t connection, const std::string &raw_message);
 }
 
 
