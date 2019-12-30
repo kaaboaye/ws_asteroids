@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(bdsm_asteroids)
 
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS -ltbb)
+set(CMAKE_CXX_FLAGS "-lrt -ltbb -lpthread")
 
 include_directories(libs/boost_1_69_0)
 include_directories(libs/json/include)
@@ -25,5 +25,5 @@ add_executable(bdsm_asteroids
         src/messages/player.cpp
         src/messages/player.h
         src/messages/context.h
-        )
+        src/asteroid.cpp src/asteroid.h)
 

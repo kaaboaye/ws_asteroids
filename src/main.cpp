@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include "tcp_server.h"
-#include "squential_id.h"
 
 int main(int argc, char const *argv[]) {
     std::cout << "starting" << std::endl;

@@ -12,9 +12,11 @@ using json = nlohmann::json;
 
 Player::Player(sequence::val id, tcp_server::connection_t connection)
         : id(id), connection(connection) {
+    position = {};
     position.set<0>(0);
     position.set<1>(0);
 
+    movement = {};
     movement.set<0>(0);
     movement.set<1>(0);
 
@@ -25,9 +27,11 @@ Player::Player() {
     id = 0;
     connection = 0;
 
+    position = {};
     position.set<0>(0);
     position.set<1>(0);
 
+    movement = {};
     movement.set<0>(0);
     movement.set<1>(0);
 

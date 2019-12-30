@@ -2,11 +2,14 @@
 // Created by mieszkowaw on 14.12.19.
 //
 
+#include <iostream>
 #include "player.h"
 #include "../player.h"
 #include "context.h"
 
-inline json player_to_json(const bdsm_asteroidy::Player &player) {
+using namespace bdsm_asteroidy;
+
+inline json player_to_json(const Player &player) {
     return {
             {"id",       player.id},
             {"position", {
@@ -21,8 +24,33 @@ inline json player_to_json(const bdsm_asteroidy::Player &player) {
     };
 }
 
-json *bdsm_asteroidy::message::player::create_player(message::context &ctx) {
+inline void broadcast_player_update(Game &game, Player &player, sequence::val excluded_id = -1) {
+
+    for (auto it : game.players) {
+        std::cout << "player id " << it.second.id << std::endl;
+    }
+
+    auto message = json({
+                                {"message", "player_updated"},
+                                {"player",  player_to_json(player)}
+                        }).dump() + "\n";
+
+    for (auto it : game.players) {
+        auto connected_player_id = it.second.id;
+        auto connection = it.second.connection;
+
+        if (connected_player_id == excluded_id) {
+            continue;
+        }
+
+        tcp_server::send_message_to_connection(connection, message);
+    }
+}
+
+json *message::player::create_player(message::context &ctx) {
     auto player = ctx.game.create_player(ctx.connection);
+
+    broadcast_player_update(ctx.game, player, player.id);
 
     return new json({
                             {"message", "player_created"},
@@ -69,17 +97,7 @@ std::optional<json *> bdsm_asteroidy::message::player::move_player(bdsm_asteroid
 
     player.rotation = rotation.get<float>();
 
-    auto *all_players = ctx.game.list_players();
-
-    auto message = json({
-                                {"message", "player_moved"},
-                                {"player",  player_to_json(player)}
-                        }).dump();
-
-    for (auto it : *all_players) {
-        auto _player = it.get();
-        tcp_server::send_message_to_connection(_player.connection, message);
-    }
+    broadcast_player_update(ctx.game, player);
 
     return {};
 }

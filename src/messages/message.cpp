@@ -43,8 +43,6 @@ std::optional<std::string*> message::handle(Game &Game, tcp_server::connection_t
 
         auto resp = handle_command(Game, command, msg, connection);
 
-        std::cout << "23423423" << std::endl;
-
         if (resp.has_value()) {
             auto resp_str = new std::string(resp.value()->dump() + "\n");
             delete resp.value();

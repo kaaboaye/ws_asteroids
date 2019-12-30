@@ -4,22 +4,14 @@
 
 #include <netinet/in.h>
 #include <cstdlib>
-#include <cstdio>
 #include <unistd.h>
 #include <sys/socket.h>
-#include <sstream>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
-
-
 #include <sys/shm.h>
-#include <sys/wait.h>
 #include <malloc.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <error.h>
-#include <math.h>
 
 #include "tcp_server.h"
 #include "messages/message.h"
@@ -66,18 +58,32 @@ void bdsm_asteroidy::tcp_server::start(int port) {
     }
 
 
-    int game_server;
-    if ((game_server = shmget(IPC_PRIVATE, sizeof(Game), IPC_CREAT | 0666)) < 0) {
+    int game_server_seg;
+    if ((game_server_seg = shmget(IPC_PRIVATE, sizeof(Game), IPC_CREAT | 0666)) < 0) {
         perror("smget returned -1\n");
         error(-1, errno, " ");
         exit(-1);
     }
 
-    accept_connection(game_server, server_fd, (struct sockaddr *) &address, &addrlen);
+    Game *game_server;
+
+    if ((game_server = (Game *) shmat(game_server_seg, nullptr, 0)) == (Game *) -1) {
+        perror("Process shmat returned NULL\n");
+        error(-1, errno, " ");
+    }
+
+    new(game_server) Game();
+
+    accept_connection(game_server_seg, server_fd, (struct sockaddr *) &address, &addrlen);
 }
 
 void tcp_server::send_message_to_connection(tcp_server::connection_t connection, const std::string &message) {
-    send(connection, message.c_str(), message.length(), 0);
+    try {
+        std::cout << "2134234234" << std::endl;
+        send(connection, message.c_str(), message.length(), 0);
+    } catch (...) {
+        std::cout << "xddsfdsdf" << std::endl;
+    }
 }
 
 static void accept_connection(int game_server_seg, int server, struct sockaddr *addr, socklen_t *addrlen) {
@@ -130,8 +136,6 @@ static void read_message(Game &game_server, int connection) {
     }
 
     auto resp = message::handle(game_server, connection, str);
-
-    std::cout << "sdffds" << std::endl;
 
     if (resp.has_value()) {
         auto resp_str = resp.value();

@@ -18,8 +18,8 @@ namespace bdsm_asteroidy {
     public:
         sequence::val id{};
         tcp_server::connection_t connection{};
-        bg::model::point<float, 2, bg::cs::cartesian> position;
-        bg::model::point<int8_t, 2, bg::cs::cartesian> movement;
+        bg::model::point<float, 2, bg::cs::cartesian> position{};
+        bg::model::point<int8_t, 2, bg::cs::cartesian> movement{};
         float rotation;
 
         Player();

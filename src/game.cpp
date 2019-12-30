@@ -21,15 +21,30 @@ namespace bdsm_asteroidy {
         return it->second;
     }
 
-    std::vector<std::reference_wrapper<Player>>* Game::list_players() {
-        auto players_vec = new std::vector<std::reference_wrapper<Player>>;
+//    std::vector<std::reference_wrapper<Player>> *Game::list_players() {
+//        auto players_vec = new std::vector<std::reference_wrapper<Player>>;
+//
+//        for (auto it : players) {
+//            auto& player = it.second;
+//            players_vec->push_back(player);
+//        }
+//
+//        return players_vec;
+//    }
 
-        for (auto it : players) {
-            auto& player = it.second;
-            players_vec->push_back(player);
-        }
+    static bi::managed_shared_memory init_memory_segment() {
+        bi::shared_memory_object::remove("GameSegment");
+        return bi::managed_shared_memory(bi::create_only, "GameSegment", 65536);
+    }
 
-        return players_vec;
+    Game::Game() : memory_segment(init_memory_segment()),
+                   players(*memory_segment.construct<players_map>("GamePlayersMap")(std::less<>(), players_allocator_t(
+                           memory_segment.get_segment_manager()))) {
+    }
+
+    Game::~Game() {
+        memory_segment.destroy<players_map>("GamePlayersMap");
+        bi::shared_memory_object::remove("GameSegment");
     }
 
 }
