@@ -11,6 +11,7 @@ namespace command {
     enum t {
         unknown,
         create_player,
+        list_players,
         get_player,
         move_player,
         fire,

@@ -13,6 +13,7 @@ namespace bdsm_asteroidy::message {
 
 namespace bdsm_asteroidy::message::player {
     nlohmann::json* create_player(bdsm_asteroidy::message::context &ctx);
+    nlohmann::json* list_players(bdsm_asteroidy::message::context &ctx);
     nlohmann::json* get_player(bdsm_asteroidy::message::context &ctx);
     std::optional<nlohmann::json*> move_player(bdsm_asteroidy::message::context &ctx);
 }

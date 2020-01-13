@@ -59,6 +59,20 @@ json *message::player::create_player(message::context &ctx) {
 
 }
 
+nlohmann::json *message::player::list_players(bdsm_asteroidy::message::context &ctx) {
+    json players;
+
+    for (auto &it : ctx.game.players) {
+        players.push_back(player_to_json(it.second));
+    }
+
+    return new json({
+                            {"message", "listed_players"},
+                            {"players", players}
+    });
+}
+
+
 json *bdsm_asteroidy::message::player::get_player(bdsm_asteroidy::message::context &ctx) {
     auto player_id = ctx.payload.at("player_id").get<bdsm_asteroidy::sequence::val>();
     auto player = ctx.game.find_player(player_id);

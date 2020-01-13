@@ -14,26 +14,35 @@
 using json = nlohmann::json;
 using namespace bdsm_asteroidy;
 
-std::optional<json*> handle_command(Game& game, command::t command, json& payload, tcp_server::connection_t connection) {
+std::optional<json *>
+handle_command(Game &game, command::t command, json &payload, tcp_server::connection_t connection) {
     message::context ctx = {game, payload, connection};
 
     switch (command) {
         case command::create_player:
             return message::player::create_player(ctx);
+
         case command::get_player:
             return message::player::get_player(ctx);
+
+        case command::list_players:
+            return message::player::list_players(ctx);
+
         case command::move_player:
             return message::player::move_player(ctx);
+
         case command::fire:
-            return new json({{"message", "player_fired"}, {"error", "not_implemented"}});
+            return new json({{"message", "player_fired"},
+                             {"error",   "not_implemented"}});
+
         case command::unknown:
             return new json({{"message", "unknown_command"}});
 
     }
 }
 
-std::optional<std::string*> message::handle(Game &Game, tcp_server::connection_t connection,
-                                const std::string &raw_message) {
+std::optional<std::string *> message::handle(Game &Game, tcp_server::connection_t connection,
+                                             const std::string &raw_message) {
     try {
         auto msg = json::parse(raw_message);
         auto command_str = msg.at("message").get<std::string>();
