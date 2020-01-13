@@ -127,20 +127,26 @@ static void read_message(Game &game_server, int connection) {
     std::string str = buffer;
     boost::trim_right(str);
 
-    std::cout << "Received: " << str << std::endl;
+    std::vector<std::string> commands;
 
-    if (str == "exit") {
-        std::cout << "Disconnecting" << std::endl;
-        shutdown(connection, 2);
-        return;
-    }
+    boost::algorithm::split(commands, str, boost::algorithm::is_any_of("\n"));
 
-    auto resp = message::handle(game_server, connection, str);
+    for (auto &command : commands) {
+        std::cout << "Received: " << command << std::endl;
 
-    if (resp.has_value()) {
-        auto resp_str = resp.value();
-        send(connection, resp_str->c_str(), resp_str->size(), 0);
-        delete resp_str;
+        if (command == "exit") {
+            std::cout << "Disconnecting" << std::endl;
+            shutdown(connection, 2);
+            return;
+        }
+
+        auto resp = message::handle(game_server, connection, command);
+
+        if (resp.has_value()) {
+            auto resp_str = resp.value();
+            send(connection, resp_str->c_str(), resp_str->size(), 0);
+            delete resp_str;
+        }
     }
 
     read_message(game_server, connection);
