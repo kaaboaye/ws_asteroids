@@ -60,7 +60,7 @@ json *message::player::create_player(message::context &ctx) {
 }
 
 nlohmann::json *message::player::list_players(bdsm_asteroidy::message::context &ctx) {
-    json players;
+    json players = json::array();
 
     for (auto &it : ctx.game.players) {
         players.push_back(player_to_json(it.second));
